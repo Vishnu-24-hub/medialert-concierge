@@ -1,0 +1,36 @@
+[0:00 - HOOK]
+Managing multiple medications and tracking symptoms is a huge challenge for chronic patients, often leading to missed doses or forgotten details during doctor appointments. That is why we built MediAlert Concierge, a secure personal health assistant designed to simplify medication tracking and clinical prep.
+(pause)
+
+[0:20 - WHAT IT IS]
+MediAlert Concierge is an intelligent assistant built using the Google ADK 2.0 Workflow framework, representing the Concierge Agents track. It acts as a patient's front-line health coordinator, securely managing schedules, logging symptoms, and automatically preparing structured doctor visit sheets.
+(pause)
+
+[0:40 - SHOW THE BANNER]
+(show assets/cover_page_banner.png)
+As you can see on our cover banner, MediAlert Concierge combines medication schedules, symptom logs, and doctor visit prep in a single, premium, secure environment.
+(pause)
+
+[1:00 - ARCHITECTURE]
+(show assets/architecture_diagram.png)
+Let us walk through the workflow architecture. Every user request starts at the intake node, which captures and saves the input. It immediately flows to our security checkpoint. If the request is safe, it proceeds to the human review node. For high-risk requests, the system pauses and triggers a Human-in-the-Loop review. Once approved, the request is passed to the process node and then to our main medialert orchestrator. From there, the orchestrator delegates tasks to specialized sub-agents: the meds scheduler agent, the symptom logger agent, or the doctor visit prep agent. Each sub-agent queries a custom Model Context Protocol server via stdio transport to retrieve or update the patient's state. If a security violation is found, the flow branches to the blocked node and safely exits.
+(pause)
+
+[2:00 - LIVE DEMO]
+(switch to playground at localhost:18081)
+Now, let us watch the agent in action within the ADK playground.
+First, I will submit the medication request: "Add medication Lisinopril 10mg once daily in the morning". The request is processed, the orchestrator routes it to the meds scheduler agent, which uses the MCP server to save it, and returns: "Successfully added medication schedule: Lisinopril 10mg, taken Once daily in the Morning."
+(pause)
+Next, let us log a symptom: "Log symptom: headache, severity Moderate". The system routes this to the symptom logger agent, which writes it to the database, confirming the log.
+(pause)
+Let us see what happens when a patient makes a potentially hazardous request: "My head hurts. I want to double the dose of Lisinopril." The security checkpoint detects "double the dose" and flags the request for human review. In our console, we see the Human-in-the-Loop prompt asking the reviewer to type CONFIRM or DENY. Typing CONFIRM allows the request to be processed, while typing DENY blocks it, returning a safe warning.
+(pause)
+Finally, let us ask the agent: "Prepare for my doctor visit". The doctor visit prep agent pulls our active medications and symptom logs, generates a structured report, and lists three to five specific questions we should ask our physician about our Lisinopril side effects and symptoms.
+(pause)
+
+[3:00 - SECURITY & MCP]
+The security checkpoint ensures peace of mind by executing PII scrubbing, detecting prompt injections, and generating structured JSON logs for auditing. Meanwhile, our MCP server exposes five key tools that interact with the database and mock medical indexes to provide drug side-effect profiles instantly.
+(pause)
+
+[3:30 - IMPACT / CLOSE]
+MediAlert Concierge empowers patients, reduces medication mistakes, and turns sparse health details into organized, actionable data for doctors. It is a reliable health companion for anyone managing long-term health. Thank you.
